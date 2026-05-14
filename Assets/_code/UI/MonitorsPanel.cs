@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,21 @@ namespace Runline
         [SerializeField] ScrollRect scrollRect;
         [SerializeField] RectTransform viewport;
         [SerializeField] RectTransform content;
+        [SerializeField] RectTransform checkCirclesContainer;
+
+        public ToggleGroup toggleGroup;
+
+        [Header("Monitors")]
+        [SerializeField] GameObject monitorPrefab;
+        [SerializeField] GameObject checkCirclePrefab;
+
+        [Header("Monitors")]
+        [SerializeField] List<Data_Monitor> dataset = new List<Data_Monitor>();
+
+        List<MonitorToggle> monitorToggles = new List<MonitorToggle>();
+        List<CheckCircle> checkCircles = new List<CheckCircle>();
+
+        int currentMonitor = -1;
 
         void Awake()
         {
@@ -32,8 +48,79 @@ namespace Runline
         {
             viewport = scrollRect.viewport;
             content = scrollRect.content;
+            toggleGroup = content.GetComponent<ToggleGroup>();
+
+            CreateMonitors();
+            CreateMonitorsCheckCircles();
+
+            SelectMonitor(0);
 
             scrollRect.horizontalNormalizedPosition = 0f;
+        }
+
+        void CreateMonitors()
+        {
+            foreach (Transform t in content)
+                Destroy(t.gameObject);
+
+            for (int i = 0; i < dataset.Count; i++)
+            {
+                GameObject go = Instantiate(monitorPrefab, content);
+                MonitorToggle mt = go.GetComponent<MonitorToggle>();
+                mt.Init(toggleGroup, dataset[i].monitorName, i);
+                go.name = "Monitor - " + dataset[i].monitorName;
+                monitorToggles.Add(mt);
+            }
+        }
+
+        void CreateMonitorsCheckCircles()
+        {
+            checkCircles.Clear();
+
+            foreach (Transform t in checkCirclesContainer)
+                Destroy(t.gameObject);
+
+            for (int i = 0; i < dataset.Count; i++)
+            {
+                GameObject go = Instantiate(checkCirclePrefab, checkCirclesContainer);
+                CheckCircle cc = go.GetComponent<CheckCircle>();
+                cc.id = i;
+                cc.Init();
+                cc.Select(false);
+                go.name = "Monitor Check - " + dataset[i].monitorName;
+                checkCircles.Add(cc);
+            }
+        }
+
+        public void SelectMonitor(int id)
+        {
+            currentMonitor = id;
+            monitorToggles[id].Select();
+
+            for (int i = 0; i < checkCircles.Count; i++)
+            {
+                if (i == id)
+                    checkCircles[i].Select(true);
+                else
+                    checkCircles[i].Select(false);
+            }
+
+            ScrollToTarget(monitorToggles[id].GetComponent<RectTransform>());
+        }
+
+        public void SelectPrevNextMonitor(bool isNext)
+        {
+            if (isNext)
+                currentMonitor++;
+            else
+                currentMonitor--;
+
+            if (currentMonitor >= monitorToggles.Count)
+                currentMonitor = monitorToggles.Count - 1;
+            else if (currentMonitor < 0)
+                currentMonitor = 0;
+
+            SelectMonitor(currentMonitor);
         }
 
         /// <summary>

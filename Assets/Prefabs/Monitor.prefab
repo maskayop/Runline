@@ -324,6 +324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d78c86ec5d12a54da09ff011855b40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Runline.MonitorToggle
+  id: -1
   monitorName: {fileID: 4305466931893950137}
   checkmark: {fileID: 7013451688112028582}
 --- !u!1 &7013451688112028582
