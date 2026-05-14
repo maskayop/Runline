@@ -12,6 +12,7 @@ namespace Vopere.Common
             {
                 Debug.LogWarning("Cannot create DataSaveLoad");
                 Destroy(gameObject);
+                return;
             }
 
             Instance = this;
