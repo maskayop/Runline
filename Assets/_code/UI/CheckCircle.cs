@@ -7,6 +7,7 @@ namespace Runline
         public bool isSelected = false;
         public int id = -1;
 
+        [SerializeField] GameObject unselected;
         [SerializeField] GameObject selected;
 
         public virtual void Init()
@@ -20,6 +21,7 @@ namespace Runline
         {
             isSelected = state;
             selected.SetActive(isSelected);
+            unselected.SetActive(!isSelected);
 
             OnSelected();
         }

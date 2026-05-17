@@ -20,7 +20,7 @@ namespace Runline
         [SerializeField] GameObject monitorPrefab;
         [SerializeField] GameObject checkCirclePrefab;
 
-        [Header("Monitors")]
+        [Header("Data")]
         [SerializeField] List<Data_Monitor> dataset = new List<Data_Monitor>();
 
         List<MonitorToggle> monitorToggles = new List<MonitorToggle>();

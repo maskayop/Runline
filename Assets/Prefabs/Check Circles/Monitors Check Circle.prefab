@@ -128,6 +128,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6960293424854237203}
   m_SourcePrefab: {fileID: 100100000, guid: f6e9c35917fe96b44b9fb966a0956ab0, type: 3}
+--- !u!1 &269655099708937884 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2850043241765146632, guid: f6e9c35917fe96b44b9fb966a0956ab0, type: 3}
+  m_PrefabInstance: {fileID: 2608537289129461396}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7980508923306010758 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5400682700326661650, guid: f6e9c35917fe96b44b9fb966a0956ab0, type: 3}
@@ -152,4 +157,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Runline.MonitorsCheckCircle
   isSelected: 0
   id: -1
+  unselected: {fileID: 269655099708937884}
   selected: {fileID: 7980508923306010758}
