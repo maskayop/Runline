@@ -21,7 +21,7 @@ namespace Runline
         [Header("Fan")]
         [SerializeField] GameObject fanObject;
         [SerializeField] Color defaultFanColor = Color.white;
-        [SerializeField] Color wokingFanColor = Color.white;
+        [SerializeField] Color workingFanColor = Color.white;
         [SerializeField] Color alarmFanColor = Color.white;
         [SerializeField] int fanAlarmChance = 10;
         [SerializeField] string fanWorkingAnimState;
@@ -29,6 +29,19 @@ namespace Runline
 
         Image fanImage;
         Animator fanAnimator;
+
+        [Header("Pressure")]
+        [SerializeField] TextMeshProUGUI pressureInTop;
+        [SerializeField] TextMeshProUGUI pressureInBottom;
+        [SerializeField] TextMeshProUGUI pressureOutTop;
+        [SerializeField] TextMeshProUGUI pressureOutBottom;
+        [SerializeField] Vector2 pressureRange = new Vector2(0, 1);
+
+        [Header("Fill Indicator")]
+        [SerializeField] Image fillImage;
+        [SerializeField] TextMeshProUGUI fillValueText;
+        [SerializeField] Color minFillColor = Color.white;
+        [SerializeField] Color maxFillColor = Color.white;
 
         [Header("Connection")]
         [SerializeField] int noConnectionChance = 10;
@@ -49,10 +62,7 @@ namespace Runline
             currentUpdateTime -= Time.deltaTime;
 
             if (currentUpdateTime < 0)
-            {
-                currentUpdateTime = Random.Range(connectionUpdateTimeRange.x, connectionUpdateTimeRange.y);
                 OnInit();
-            }
         }
 
         public void Init(string INname)
@@ -61,16 +71,20 @@ namespace Runline
 
             fanImage = fanObject.GetComponent<Image>();
             fanAnimator = fanObject.GetComponent<Animator>();
-            fanAnimator.Play(fanNotWorkingAnimState);
+            fanAnimator.StopPlayback();
 
             OnInit();
         }
 
         void OnInit()
         {
+            currentUpdateTime = Random.Range(connectionUpdateTimeRange.x, connectionUpdateTimeRange.y);
+
             UpdateAlarmCircles();
             UpdateConnection();
             UpdateFan();
+            UpdatePressure();
+            UpdateFillIndicator();
         }
 
         void UpdateAlarmCircles()
@@ -134,12 +148,54 @@ namespace Runline
             else
             {
                 fanAnimator.Play(fanWorkingAnimState);
-                fanImage.color = wokingFanColor;
+                fanImage.color = workingFanColor;
 
                 float randFreq = Random.Range(frequencyRange.x, frequencyRange.y);
 
                 frequencyText.text = randFreq.ToString("F2");
             }
+        }
+
+        void UpdatePressure()
+        {
+            if (noConnection)
+            {
+                pressureInTop.text = "0";
+                pressureInBottom.text = "0";
+                pressureOutTop.text = "0";
+                pressureOutBottom.text = "0";
+                return;
+            }
+
+            float ranTI = Random.Range(pressureRange.x, pressureRange.y);
+            float ranBI = Random.Range(pressureRange.x, pressureRange.y);
+            float ranTO = Random.Range(pressureRange.x, pressureRange.y);
+            float ranBO = Random.Range(pressureRange.x, pressureRange.y);
+
+            pressureInTop.text = ranTI.ToString("F2");
+            pressureInBottom.text = ranBI.ToString("F2");
+            pressureOutTop.text = ranTO.ToString("F2");
+            pressureOutBottom.text = ranBO.ToString("F2");
+        }
+
+        void UpdateFillIndicator()
+        {
+            if (noConnection)
+            {
+                fillValueText.text = "0";
+                fillImage.gameObject.SetActive(false);
+                return;
+            }
+
+            float rand = Random.Range(0f, 1f);
+
+            fillImage.color = Color.Lerp(minFillColor, maxFillColor, rand);
+            fillImage.fillAmount = rand;
+
+            if (rand == 0)
+                fillValueText.text = "0";
+            else
+                fillValueText.text = rand.ToString("F2");
         }
     }
 }
