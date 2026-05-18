@@ -35,7 +35,7 @@ namespace Runline
         [SerializeField] TextMeshProUGUI pressureInBottom;
         [SerializeField] TextMeshProUGUI pressureOutTop;
         [SerializeField] TextMeshProUGUI pressureOutBottom;
-        [SerializeField] Vector2 pressureRange = new Vector2(0, 1);
+        [SerializeField] Vector2 pressureRange = new Vector2(0f, 1f);
 
         [Header("Fill Indicator")]
         [SerializeField] Image fillImage;
@@ -48,14 +48,18 @@ namespace Runline
         [SerializeField] TextMeshProUGUI connectionUpdateText;
         [SerializeField] GameObject connectionUpdatePanel;
         [SerializeField] GameObject noConnectionPanel;
-        [SerializeField] Vector2 connectionUpdateTimeRange = new Vector2(0, 1);
+        [SerializeField] Vector2 connectionUpdateTimeRange = new Vector2(0f, 1f);
 
         float currentUpdateTime = 0;
         bool noConnection = false;
 
         [Header("Frequency")]
         [SerializeField] TextMeshProUGUI frequencyText;
-        [SerializeField] Vector2 frequencyRange = new Vector2(0, 1);
+        [SerializeField] Vector2 frequencyRange = new Vector2(0f, 1f);
+
+        [Header("Temperature")]
+        [SerializeField] TextMeshProUGUI temperatureText;
+        [SerializeField] Vector2 temperatureRange = new Vector2(0f, 1f);
 
         void Update()
         {
@@ -85,6 +89,7 @@ namespace Runline
             UpdateFan();
             UpdatePressure();
             UpdateFillIndicator();
+            UpdateTemperature();
         }
 
         void UpdateAlarmCircles()
@@ -189,6 +194,7 @@ namespace Runline
 
             float rand = Random.Range(0f, 1f);
 
+            fillImage.gameObject.SetActive(true);
             fillImage.color = Color.Lerp(minFillColor, maxFillColor, rand);
             fillImage.fillAmount = rand;
 
@@ -196,6 +202,22 @@ namespace Runline
                 fillValueText.text = "0";
             else
                 fillValueText.text = rand.ToString("F2");
+        }
+
+        void UpdateTemperature()
+        {
+            if (noConnection)
+            {
+                temperatureText.text = "-";
+                return;
+            }
+
+            float rand = Random.Range(temperatureRange.x, temperatureRange.y);
+
+            if (rand == 0)
+                temperatureText.text = "-";
+            else
+                temperatureText.text = rand.ToString("F1") + " °";
         }
     }
 }
